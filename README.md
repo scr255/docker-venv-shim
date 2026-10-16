@@ -1,0 +1,60 @@
+# docker-venv-shim
+
+Docker-backed Python virtual environments for any repository.
+
+`build_kernel.sh` builds a Docker image from `environments/<env>/` and creates a `.venv` whose `bin/python` runs inside that image; `python.sh` is the shim embedded into the generated `.venv`. Editors, terminals, and Jupyter kernels see a normal virtual environment — the interpreter and its dependencies live in the container.
+
+Two Azure variants build on it:
+
+- `build_kernel_azure_local.sh` — Personal in the Azure ML workspace (not visible to other users).
+- `build_kernel_azure_remote.sh` — Shared in the Azure ML workspace (visible to other users).
+
+## What you get
+
+- `.venv/bin/python` runs Python in the container as your host UID/GID, with the project bind-mounted at the same absolute path; `.venv/bin/activate` works in bash and zsh.
+- Jupyter kernels work out of the box: `ipykernel` is added automatically and the shim handles the connection (including WSL host networking).
+- Content-hashed image tags and a per-clone project ID: rebuilds happen only when the environment folder changes, and checkouts never collide; `--remove` cleans up by label.
+
+## Setup
+
+- Linux, macOS, or WSL with bash, Docker running and accessible, and `sha256sum` or `shasum` (`jq` optional).
+- Copy the scripts (`build_kernel*.sh`, `python.sh`, `config_azure_example.json`) into your project's `environments/`; each environment is a folder with a `Dockerfile` and a `requirements.txt` — see `environments/base/` and `environments/base_azure/`.
+- The Azure variants need only a `config.json` at the project root (copy `environments/config_azure_example.json`); the CLI and Python come from the container.
+
+## Usage
+
+```bash
+chmod +x environments/build_kernel.sh   # grant execution
+./environments/build_kernel.sh base     # build
+.venv/bin/python script.py              # run python script
+source .venv/bin/activate               # activate
+```
+
+Azure local — same options, plus `.venv/bin/az` sharing the host's Azure login:
+
+```bash
+./environments/build_kernel_azure_local.sh base_azure
+.venv/bin/az login
+```
+
+Azure remote — publishes to an Azure ML workspace; run with the local Azure environment active. `--version N` sets the version (default 1); `--show` prints what would be published:
+
+```bash
+source .venv/bin/activate
+./environments/build_kernel_azure_remote.sh base_azure --version 1
+```
+
+Options for `build_kernel.sh` and `build_kernel_azure_local.sh`:
+
+| Option      | Effect                                                          |
+| ----------- | --------------------------------------------------------------- |
+| _(none)_    | Build if needed and make the environment active                 |
+| `--rebuild` | Rebuild from scratch (`--pull --no-cache`)                      |
+| `--remove`  | Remove the environment's containers, images, and `.venvs/<env>` |
+| `--path`    | Print the interpreter path (for editor toolchain configuration) |
+
+Multiple environments per project are supported; `.venv` points at the most recently built one. Add `.venv` and `.venvs/` to `.gitignore`.
+
+## Editors
+
+Zed: select `.venv/bin/python` as the toolchain (the REPL and Jupyter kernels use it automatically). Anything else: point it at `.venv/bin/python`.
