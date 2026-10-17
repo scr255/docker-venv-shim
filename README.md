@@ -18,8 +18,33 @@ Two Azure variants build on it:
 ## Setup
 
 - Linux, macOS, or WSL with bash, Docker running and accessible, and `sha256sum` or `shasum` (`jq` optional).
-- Copy the scripts (`build_kernel*.sh`, `python.sh`, `config_azure_example.json`) into your project's `environments/`; each environment is a folder with a `Dockerfile` and a `requirements.txt` — see `environments/base/` and `environments/base_azure/`.
 - The Azure variants need only a `config.json` at the project root (copy `environments/config_azure_example.json`); the CLI and Python come from the container.
+
+## Add to your workflow
+
+The `sync-environments.yml` GitHub Action pulls the builders — and, optionally, the sample environments — from this repository into `environments/`, so you don't have to copy them by hand.
+
+### New repository
+
+On this page, click **Use this template → Create a new repository**. The workflow is inherited automatically.
+
+### Existing repository
+
+1. Add the workflow to your codebase:
+
+   ```bash
+   mkdir -p .github/workflows
+   curl -fL https://raw.githubusercontent.com/scr255/docker-venv-shim/main/.github/workflows/sync-environments.yml \
+     -o .github/workflows/sync-environments.yml
+   ```
+
+2. Commit and push to GitHub.
+
+3. In the **Actions** tab, run **Sync environment builders from docker-venv-shim** ("Run workflow"). Besides the always-synced builders, you can tick the sample environment, the Azure builders, and/or the sample Azure environment. When it finishes, `environments/` is populated.
+
+4. Pull the changes.
+
+5. Continue with [Usage](#usage).
 
 ## Usage
 
