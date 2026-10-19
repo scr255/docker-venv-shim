@@ -9,6 +9,16 @@ Two Azure variants build on it:
 - `build_kernel_azure_local.sh` — Personal in the Azure ML workspace (not visible to other users).
 - `build_kernel_azure_remote.sh` — Shared in the Azure ML workspace (visible to other users).
 
+## Contents
+
+- [What you get](#what-you-get)
+- [Setup](#setup)
+- [Add to your workflow](#add-to-your-workflow)
+  - [New repository](#new-repository)
+  - [Existing repository](#existing-repository)
+- [Usage](#usage)
+- [Editors](#editors)
+
 ## What you get
 
 - `.venv/bin/python` runs Python in the container as your host UID/GID, with the project bind-mounted at the same absolute path; `.venv/bin/activate` works in bash and zsh.
@@ -33,9 +43,7 @@ On this page, click **Use this template → Create a new repository**. The workf
 1. Add the workflow to your codebase:
 
    ```bash
-   mkdir -p .github/workflows
-   curl -fL https://raw.githubusercontent.com/scr255/docker-venv-shim/main/.github/workflows/sync-environments.yml \
-     -o .github/workflows/sync-environments.yml
+   mkdir -p .github/workflows && curl -fL https://raw.githubusercontent.com/scr255/docker-venv-shim/main/.github/workflows/sync-environments.yml -o .github/workflows/sync-environments.yml
    ```
 
 2. Commit and push to GitHub.
