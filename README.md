@@ -88,6 +88,18 @@ Options for `build_kernel.sh` and `build_kernel_azure_local.sh`:
 
 Multiple environments per project are supported; `.venv` points at the most recently built one. Add `.venv` and `.venvs/` to `.gitignore`.
 
-## Editors
+## Zed editor
 
-Zed: select `.venv/bin/python` as the toolchain (the REPL and Jupyter kernels use it automatically). Anything else: point it at `.venv/bin/python`.
+A simple way to automatically make Zed use the `.venv` is to edit `settings.json` (**Zed > Open Settings File**) and add the following configuration:
+
+```json
+  "terminal": {
+    "shell": {
+      "with_arguments": {
+        "args": ["-l"],
+        "program": "/bin/bash"
+      }
+    }
+  }
+
+```
