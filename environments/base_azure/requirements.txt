@@ -6,4 +6,4 @@ azureml-fsspec==1.4.0
 azureml-mlflow==1.62.0.post6
 mlflow-skinny==3.15.0
 ruff==0.17.1
-pandas==3.0.6
+pandas==2.3.3
