@@ -2,7 +2,7 @@
 FROM python:3.13.16-slim
 
 # uv package manager (single static binary)
-COPY --from=ghcr.io/astral-sh/uv:0.13.1 /uv /usr/local/bin/uv
+COPY --from=ghcr.io/astral-sh/uv:0.13.4 /uv /usr/local/bin/uv
 
 # Build the environment virtualenv at /opt/venv:
 #   - install requirements.txt with uv
